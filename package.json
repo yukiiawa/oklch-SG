@@ -1,0 +1,37 @@
+{
+  "name": "oklch-scale-generator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
+  },
+  "dependencies": {
+    "@types/culori": "^4.0.1",
+    "@unocss/reset": "^66.6.7",
+    "@vueuse/core": "^14.2.1",
+    "apcach": "^0.6.4",
+    "culori": "^4.0.2",
+    "highlight.js": "^11.11.1",
+    "pinia": "^3.0.4",
+    "unocss": "^66.6.7",
+    "vue": "^3.5.30"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@vitejs/plugin-vue": "^6.0.5",
+    "@vue/tsconfig": "^0.9.1",
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1.57.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.2",
+    "vite-plugin-vue-devtools": "^8.1.1",
+    "vue-tsc": "^3.2.6"
+  }
+}
