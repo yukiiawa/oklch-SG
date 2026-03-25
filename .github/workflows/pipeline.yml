@@ -38,7 +38,7 @@ jobs:
     name: 🌐 Deploy to Cloudflare Pages
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
       deployments: write
@@ -48,6 +48,12 @@ jobs:
         with:
           name: build-dist
           path: dist
+
+      - name: 🏗️ Create Cloudflare Pages Project
+        run: bunx wrangler pages project create oklch-scale-generator --production-branch main || true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: ☁️ Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
