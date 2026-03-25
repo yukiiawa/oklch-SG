@@ -49,6 +49,11 @@ jobs:
           name: build-dist
           path: dist
 
+      - name: ⚡ Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: 🏗️ Create Cloudflare Pages Project
         run: bunx wrangler pages project create oklch-scale-generator --production-branch main || true
         env:
@@ -82,6 +87,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: ⚡ Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: 📥 Download Build Artifacts
         uses: actions/download-artifact@v4
