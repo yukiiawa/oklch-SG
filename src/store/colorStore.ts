@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed } from "vue";
 import { useLocalStorage } from "@vueuse/core";
-import { computeC, checkGamut, autoDistributeL, hToHex, computeAPCA } from "../utils/color";
+import { computeC, checkGamut, autoDistributeL, hToHex, computeAPCA, clampToGamut } from "../utils/color";
 
 export interface Step {
   label: string;
@@ -18,6 +18,7 @@ export interface Config {
   mainIdx: number;
   varPrefix: string;
   useDynamicHue: boolean;
+  gamut: "none" | "srgb" | "p3" | "rec2020";
   originalColor?: string; // Raw hex or oklch input for reference
 }
 
@@ -30,6 +31,7 @@ export interface ComputedSwatch {
   hex: string;
   inSRGB: boolean;
   inP3: boolean;
+  inRec2020: boolean;
   apcaOnWhite: number; // swatch as fg text on white bg
   apcaOnBlack: number; // swatch as fg text on black bg
   apcaWhiteOnThis: number; // white text on swatch as bg
@@ -64,6 +66,7 @@ export const DEFAULT_CONFIG: Config = {
   mainIdx: 5, // index of '500'
   varPrefix: "color",
   useDynamicHue: false,
+  gamut: "none",
 };
 
 export const useColorStore = defineStore("color", () => {
@@ -92,22 +95,32 @@ export const useColorStore = defineStore("color", () => {
 
   const computedSwatches = computed<ComputedSwatch[]>(() => {
     return config.value.steps.map((step) => {
-      const cCalc = computeC(step.l, config.value);
-      const c = step.cOverride ?? cCalc;
-      const h = step.hOverride ?? config.value.h;
-      const { inSRGB, inP3 } = checkGamut(step.l, c, h);
+      let cComp = computeC(step.l, config.value);
+      let c = step.cOverride ?? cComp;
+      let h = step.hOverride ?? config.value.h;
+      let l = step.l;
 
-      const oklchStr = `oklch(${step.l.toFixed(3)} ${c.toFixed(3)} ${Math.round(h)})`;
+      // Apply Gamut Mapping if enabled
+      if (config.value.gamut !== "none") {
+        const clamped = clampToGamut(l, c, h, config.value.gamut);
+        l = clamped.l;
+        c = clamped.c;
+        h = clamped.h;
+      }
+
+      const { inSRGB, inP3, inRec2020 } = checkGamut(l, c, h);
+      const oklchStr = `oklch(${l.toFixed(3)} ${c.toFixed(3)} ${Math.round(h)})`;
 
       return {
         label: String(step.label),
-        l: step.l,
+        l,
         c,
         h,
         oklch: oklchStr,
-        hex: hToHex(h, step.l, c).toUpperCase(),
+        hex: hToHex(h, l, c).toUpperCase(),
         inSRGB,
         inP3,
+        inRec2020,
         apcaOnWhite: computeAPCA(oklchStr, "#ffffff"),
         apcaOnBlack: computeAPCA(oklchStr, "#000000"),
         apcaWhiteOnThis: computeAPCA("#ffffff", oklchStr),

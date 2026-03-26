@@ -11,6 +11,7 @@ const props = defineProps<{
     hex: string;
     inSRGB: boolean;
     inP3: boolean;
+    inRec2020: boolean;
   };
   isCopied: boolean;
   hasHueShift: boolean;
@@ -23,17 +24,20 @@ const emit = defineEmits<{
 }>();
 
 const gamutInfo = computed(() => {
+  if (!props.swatch.inRec2020)
+    return { text: "OUT", class: "bg-red-600 text-white shadow-lg" };
   if (!props.swatch.inP3)
-    return { text: "OUT", class: "bg-rose-500/90 text-white backdrop-blur-md" };
+    return { text: "2020", class: "bg-emerald-600 text-white shadow-md" };
   if (!props.swatch.inSRGB)
-    return { text: "P3", class: "bg-indigo-500/90 text-white backdrop-blur-md" };
+    return { text: "P3", class: "bg-indigo-600 text-white shadow-sm" };
   return null;
 });
 
 const gamutTooltip = computed(() => {
-  if (!props.swatch.inP3) return "Out of Display P3 (Decrease C_peak)";
-  if (!props.swatch.inSRGB) return "Display P3 Range (Supports wide-gamut screens)";
-  return "sRGB Safe";
+  if (!props.swatch.inRec2020) return "Outside Rec.2020 (Extreme gamut)";
+  if (!props.swatch.inP3) return "Rec.2020 range (Pro HDR displays)";
+  if (!props.swatch.inSRGB) return "Display P3 range (Wide gamut screens)";
+  return "sRGB Safe (Standard)";
 });
 
 const textColorClass = computed(() => {

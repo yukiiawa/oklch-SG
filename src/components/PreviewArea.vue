@@ -337,7 +337,7 @@ const showFixPanel = ref(true);
       <!-- Main Scale Preview (Horizontal scroll on small screens) -->
       <div class="w-full overflow-x-auto pb-2 sm:pb-4 -mb-2 sm:-mb-4 custom-scrollbar">
         <div
-          class="flex h-24 sm:h-32 min-w-max sm:min-w-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl border border-black/5 dark:border-white/10 mx-auto w-full group/palette bg-white dark:bg-gray-950 relative ring-1 ring-black/5 dark:ring-white/5"
+          class="flex h-24 sm:h-32 min-w-max sm:min-w-0 rounded-xl sm:rounded-2xl overflow-hidden border border-black/5 dark:border-white/10 mx-auto w-full group/palette bg-white dark:bg-gray-950 relative ring-1 ring-black/5 dark:ring-white/5"
         >
           <!-- Base Reference Color -->
           <div

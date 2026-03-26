@@ -5,6 +5,7 @@ import LightnessSequence from "./components/LightnessSequence.vue";
 import ChromaCurve from "./components/ChromaCurve.vue";
 import ExportPanel from "./components/ExportPanel.vue";
 import ThemeToggle from "./components/ThemeToggle.vue";
+import GamutOptimization from "./components/GamutOptimization.vue";
 import { ref } from "vue";
 
 const supportsOklch = ref(typeof CSS !== "undefined" && CSS.supports("color", "oklch(0 0 0)"));
@@ -133,6 +134,10 @@ const SectionWrapper = defineComponent({
 
       <SectionWrapper title="Step 3: Setup C Curve">
         <ChromaCurve />
+      </SectionWrapper>
+
+      <SectionWrapper title="Step 4: Gamut Optimization">
+        <GamutOptimization />
       </SectionWrapper>
     </main>
 

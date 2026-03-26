@@ -1,4 +1,4 @@
-import { inGamut, parse, oklch, oklab, formatHex } from "culori";
+import { inGamut, parse, oklch, oklab, formatHex, toGamut } from "culori";
 // @ts-ignore
 import { calcContrast } from "apcach";
 import type { Config, ComputedSwatch } from "../store/colorStore";
@@ -28,6 +28,27 @@ export function checkGamut(l: number, c: number, h: number) {
   return {
     inSRGB: inGamut("rgb")(color),
     inP3: inGamut("p3")(color),
+    inRec2020: inGamut("rec2020")(color),
+  };
+}
+
+/**
+ * Clamp a color to a specific gamut using the CSS Color 4 algorithm (perceptual chroma reduction)
+ */
+export function clampToGamut(
+  l: number,
+  c: number,
+  h: number,
+  gamut: "srgb" | "p3" | "rec2020",
+): { l: number; c: number; h: number } {
+  const color = { mode: "oklch" as const, l, c, h };
+  const targetMode = gamut === "srgb" ? "rgb" : gamut;
+  const clamped = toGamut(targetMode, "oklch")(color);
+  const result = oklch(clamped);
+  return {
+    l: result.l ?? l,
+    c: result.c ?? 0,
+    h: result.h ?? h,
   };
 }
 
